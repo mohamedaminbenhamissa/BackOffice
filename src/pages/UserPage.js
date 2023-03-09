@@ -36,7 +36,7 @@ import USERLIST from '../_mock/user';
 const TABLE_HEAD = [
   { id: 'name', label: 'Nom', alignRight: false },
   { id: 'formation', label: 'Formation', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
   { id: 'isVerified', label: 'Verified', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
