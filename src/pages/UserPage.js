@@ -1,14 +1,14 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useState } from 'react';
+
 // @mui
+
 import {
   Card,
   Table,
   Stack,
   Paper,
-  Avatar,
   Button,
   Popover,
   Checkbox,
@@ -23,22 +23,27 @@ import {
   TablePagination,
 } from '@mui/material';
 // components
-import Label from '../components/label';
+
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
-import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
+import { UserListHead, UserListToolbar  } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
-
+import  AddUserForm from '../sections/@dashboard/user/UserForm'
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Nom', alignRight: false },
-  { id: 'formation', label: 'Formation', alignRight: false },
+  { id: 'prenom', label: 'Prenom', alignRight: false },
+  { id: 'nom', label: 'Nom', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'groupes', label: 'Groupes', alignRight: false },
+  { id: 'adresse', label: 'Adresse', alignRight: false },
+  { id: 'ville', label: 'Ville', alignRight: false },
+  { id: 'pays', label: 'Pays', alignRight: false },
+  { id: 'codePostal', label: 'Code Postal', alignRight: false },
+  { id: 'tel', label: 'Téléphone', alignRight: false },
+  
   { id: '' },
 ];
 
@@ -68,12 +73,13 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.nom.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function UserPage() {
+  const [showForm, setShowForm] = useState(false);
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -82,9 +88,9 @@ export default function UserPage() {
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('prenom');
 
-  const [filterName, setFilterName] = useState('');
+  const [filternom, setFilternom] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -104,18 +110,18 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = USERLIST.map((n) => n.prenom);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, prenom) => {
+    const selectedIndex = selected.indexOf(prenom);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, prenom);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -126,6 +132,10 @@ export default function UserPage() {
     setSelected(newSelected);
   };
 
+const handleShowFrom = () =>{
+  setShowForm()
+};
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -135,16 +145,16 @@ export default function UserPage() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleFilterByName = (event) => {
+  const handleFilterBynom = (event) => {
     setPage(0);
-    setFilterName(event.target.value);
+    setFilternom(event.target.value);
   };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filternom);
 
-  const isNotFound = !filteredUsers.length && !!filterName;
+  const isNotFound = !filteredUsers.length && !!filternom;
 
   return (
     <>
@@ -157,13 +167,26 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             Utilisateurs
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}onClick={handleShowFrom}>
           Nouvel utilisateur
           </Button>
+          {showForm && AddUserForm && (
+        <form>
+          <input type="text" name="prenom" placeholder="Prénom" />
+          <input type="text" name="nom" placeholder="Nom" />
+          <input type="email" name="email" placeholder="Email" />
+          <input type="text" name="groupes" placeholder="Groupes" />
+          <input type="text" name="adresse" placeholder="Adresse" />
+          <input type="text" name="ville" placeholder="Ville" />
+          <input type="text" name="pays" placeholder="Pays" />
+          <input type="text" name="code_postal" placeholder="Code postal" />
+          <input type="tel" name="tel" placeholder="Téléphone" />
+        </form>
+      )}
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <UserListToolbar numSelected={selected.length} filternom={filternom} onFilternom={handleFilterBynom} />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -179,33 +202,31 @@ export default function UserPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                    const selectedUser = selected.indexOf(name) !== -1;
+                    const { id, prenom, nom, email, groupes,adresse,ville,pays,codePostal,tel } = row;
+                    const selectedUser = selected.indexOf(prenom) !== -1;
 
                     return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                      <TableRow hover key={id} tabIndex={-1} prenom="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
+                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, prenom)} />
                         </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
 
-                        <TableCell align="left">{company}</TableCell>
+                        <TableCell align="left">{nom}</TableCell>                  
 
-                        <TableCell align="left">{role}</TableCell>
+                        <TableCell align="left">{email}</TableCell>
 
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                        <TableCell align="left">{groupes}</TableCell>
 
-                        <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell>
+                        <TableCell align="left">{adresse}</TableCell>
+
+                        <TableCell align="left">{ville}</TableCell>
+                          
+                        <TableCell align="left">{pays}</TableCell>
+
+                        <TableCell align="left">{codePostal}</TableCell>
+
+                        <TableCell align="left">{tel}</TableCell>
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
@@ -232,13 +253,13 @@ export default function UserPage() {
                           }}
                         >
                           <Typography variant="h6" paragraph>
-                            Not found
+                          Pas trouvé
                           </Typography>
 
                           <Typography variant="body2">
-                            No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete words.
+                          Aucun résultat trouvé pour &nbsp;
+                            <strong>&quot;{filternom}&quot;</strong>.
+                            <br /> Essayez de vérifier les fautes de frappe ou d'utiliser des mots complets.
                           </Typography>
                         </Paper>
                       </TableCell>
