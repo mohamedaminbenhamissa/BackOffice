@@ -16,11 +16,11 @@ const navConfig = [
     path: '/dashboard/user',
     icon: icon('users'),
   },
-  {
-    title: 'Formateurs',
-    path: '/dashboard/products',
-    icon: icon('trainer'),
-  },
+  // {
+  //   title: 'Formateurs',
+  //   path: '/dashboard/products',
+  //   icon: icon('trainer'),
+  // },
   {
     title: 'Formations',
     path: '/dashboard/blog',

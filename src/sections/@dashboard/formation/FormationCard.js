@@ -49,11 +49,11 @@ export default function ShopFormationCard({ Formation }) {
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link color="inherit" underline="hover">
+        <textPath color="inherit">
           <Typography variant="subtitle2" noWrap>
             {name}
           </Typography>
-        </Link>
+        </textPath>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <ColorPreview colors={colors} />

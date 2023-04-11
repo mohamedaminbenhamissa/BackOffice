@@ -13,7 +13,8 @@
   "plugins": [
     "react",
     "react-hooks",
-    "prettier"
+    "prettier",
+    "jsx-a11y"
   ],
   "parser": "@babel/eslint-parser",
   "parserOptions": {
@@ -43,7 +44,13 @@
     "no-restricted-exports": 0,
     "react/no-children-prop": 0,
     "react/forbid-prop-types": 0,
-    "jsx-a11y/anchor-is-valid": 0,
+    "jsx-a11y/label-has-associated-control": [ "error", {
+      "labelComponents": ["label"],
+      "labelAttributes": ["htmlFor"],
+      "controlComponents": ["input", "select", "textarea"],
+      "assert": "either",
+      "depth": 3
+    }],
     "react/react-in-jsx-scope": 0,
     "react/no-array-index-key": 0,
     "react/no-unused-prop-types": 1,

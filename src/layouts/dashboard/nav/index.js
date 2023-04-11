@@ -58,7 +58,7 @@ export default function Nav({ openNav, onCloseNav }) {
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
-        <Link underline="none">
+       
           <StyledAccount>
             <Avatar src={account.photoURL} alt="photoURL" />
 
@@ -72,7 +72,7 @@ export default function Nav({ openNav, onCloseNav }) {
               </Typography>
             </Box>
           </StyledAccount>
-        </Link>
+       
       </Box>
 
       <NavSection data={navConfig} />

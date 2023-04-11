@@ -4,7 +4,7 @@ import axios from 'axios';
 import 'react-toastify/dist/ReactToastify.css';
 import { Card, CardContent, Divider, Box, Typography, TextField, Button } from '@mui/material';
 
-export default function AddUserForm({ show, setShow }) {
+export default function UpdateUserForm({ showupdate, setShowupdate }) {
   const [membreId , setMembreId] = useState('');
   const [prenom, setPrenom] = useState('');
   const [nom, setNom] = useState('');
@@ -17,12 +17,29 @@ export default function AddUserForm({ show, setShow }) {
   const [tel, setTel] = useState('');
   const [formations, setFormations] = useState([]);
   const [selectedFormation, setSelectedFormation] = useState('');
+  const [userData, setUserData] = useState({});
 
-  const handleSubmit = (event) => {
+
+ 
+
+  useEffect(() => {
+    fetchUserData(membreId); 
+  }, [membreId]);
+  
+  const fetchUserData = async (membreId) => {
+    try {
+      const response = await axios.get(`http://localhost:3003/api/users/${membreId}`);
+      setUserData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleUpdate = (event) => {
     event.preventDefault();
   
     const formData = new URLSearchParams();
-
+    
     formData.append('prenom', prenom);
     formData.append('nom', nom);
     formData.append('email', email);
@@ -37,7 +54,7 @@ export default function AddUserForm({ show, setShow }) {
     const token = localStorage.getItem('accessToken');
   
     axios
-      .post(`http://localhost:3003/api/formations/${selectedFormation}/membres`, formData, {
+      .put(`http://localhost:3003/api/formations/:66594/membres/${membreId}`, formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
           Authorization: `Bearer ${token}`,
@@ -45,14 +62,13 @@ export default function AddUserForm({ show, setShow }) {
       })
       .then((response) => {
         // Handle the response from the API
-        
+        console.log("ok************",userData.prenom)
         if (response.status === 201) {
           const successMessage = document.createElement('p');
           successMessage.textContent = 'Form submitted successfully!';
-          setShow(false);
-          alert(` Utilisateur ${prenom} ajouté avec succès!`);
-          console.log('souuuuuuuuu)))))))))uuuuuuuuuuuuuuuuuu', response);
-          window.location.reload(true); 
+          setShowupdate(false);
+          alert(` Utilisateur ${prenom} modifié avec succès!`);
+          
         } else {
           throw new Error(response.status);
         }
@@ -87,7 +103,7 @@ export default function AddUserForm({ show, setShow }) {
 
   return (
     <>
-      <div onSubmit={handleSubmit} style={{ display: show ? 'block' : 'none' }}>
+      <div onSubmit={handleUpdate} style={{ display: showupdate ? 'block' : 'none' }}>
         <Card
           variant="outlined"
           sx={{
@@ -108,7 +124,7 @@ export default function AddUserForm({ show, setShow }) {
                   fontWeight: '500',
                 }}
               >
-                Ajouter Utilisateur
+                Modifier Utilisateur
               </Typography>
             </Box>
           </Box>
@@ -123,7 +139,7 @@ export default function AddUserForm({ show, setShow }) {
                 id="default-value"
                 label="prenom "
                 variant="outlined"
-                defaultValue="user1"
+                defaultValue={userData.prenom}
                 fullWidth
                 sx={{
                   mb: 2,
@@ -135,7 +151,7 @@ export default function AddUserForm({ show, setShow }) {
                 id="default-value"
                 label="Nom "
                 variant="outlined"
-                defaultValue="user1"
+                defaultValue={userData.nom}
                 fullWidth
                 sx={{
                   mb: 2,
@@ -147,7 +163,7 @@ export default function AddUserForm({ show, setShow }) {
                 id="default-value"
                 label="Email "
                 variant="outlined"
-                defaultValue="user1"
+                defaultValue={userData.email}
                 fullWidth
                 sx={{
                   mb: 2,
@@ -159,7 +175,7 @@ export default function AddUserForm({ show, setShow }) {
                 id="default-value"
                 label="Groupes "
                 variant="outlined"
-                defaultValue="user1"
+                defaultValue={userData.groupes}
                 fullWidth
                 sx={{
                   mb: 2,
@@ -171,7 +187,7 @@ export default function AddUserForm({ show, setShow }) {
                 id="default-value"
                 label="Adresse "
                 variant="outlined"
-                defaultValue="user1"
+                defaultValue={userData.adresse}
                 fullWidth
                 sx={{
                   mb: 2,
@@ -183,7 +199,7 @@ export default function AddUserForm({ show, setShow }) {
                 id="default-value"
                 label="Ville "
                 variant="outlined"
-                defaultValue="user1"
+                defaultValue={userData.ville}
                 fullWidth
                 sx={{
                   mb: 2,
@@ -195,7 +211,7 @@ export default function AddUserForm({ show, setShow }) {
                 id="default-value"
                 label="Pays "
                 variant="outlined"
-                defaultValue="user1"
+                defaultValue={userData.pays}
                 fullWidth
                 sx={{
                   mb: 2,
@@ -207,6 +223,7 @@ export default function AddUserForm({ show, setShow }) {
                 id="default-value"
                 label="code Postal"
                 variant="outlined"
+                defaultValue={userData.codePostal}
                 fullWidth
                 sx={{
                   mb: 2,
@@ -218,6 +235,7 @@ export default function AddUserForm({ show, setShow }) {
                 id="default-value"
                 label="tel"
                 variant="outlined"
+                defaultValue={userData.tel}
                 fullWidth
                 sx={{
                   mb: 2,
@@ -251,11 +269,11 @@ export default function AddUserForm({ show, setShow }) {
               </div>
               <br /> <br />
               <div>
-                <Button color="success" variant="contained" onClick={handleSubmit}>
-                  Ajouter
+                <Button color="success" variant="contained" onClick={handleUpdate}>
+                  Modifier
                 </Button>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Button color="error" variant="contained" onClick={() => setShow(false)}>
+                <Button color="error" variant="contained" onClick={() => setShowupdate(false)}>
                   Fermer
                 </Button>
               </div>

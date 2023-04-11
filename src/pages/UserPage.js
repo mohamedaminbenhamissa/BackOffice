@@ -1,6 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import Swal from "sweetalert2";
 
 // @mui
 
@@ -8,7 +10,6 @@ import {
   Card,
   Table,
   Stack,
-  Paper,
   Button,
   Popover,
   Checkbox,
@@ -20,67 +21,32 @@ import {
   Typography,
   IconButton,
   TableContainer,
-  TablePagination,
 } from '@mui/material';
 // components
 
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
-import { UserListHead, UserListToolbar  } from '../sections/@dashboard/user';
+import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/user';
-import  AddUserForm from '../sections/@dashboard/user/UserForm'
-// ----------------------------------------------------------------------
+import AddUserForm from '../sections/@dashboard/user/UserForm';
+import UpdateUserForm from '../sections/@dashboard/user/UserUpdate'; 
 
 const TABLE_HEAD = [
+  { id: 'id', label: 'Id Apprenant', alignRight: false },
   { id: 'prenom', label: 'Prenom', alignRight: false },
   { id: 'nom', label: 'Nom', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
-  { id: 'groupes', label: 'Groupes', alignRight: false },
-  { id: 'adresse', label: 'Adresse', alignRight: false },
-  { id: 'ville', label: 'Ville', alignRight: false },
-  { id: 'pays', label: 'Pays', alignRight: false },
-  { id: 'codePostal', label: 'Code Postal', alignRight: false },
-  { id: 'tel', label: 'Téléphone', alignRight: false },
-  
+  { id: 'formation', label: 'Formation', alignRight: false },
   { id: '' },
 ];
 
-// ----------------------------------------------------------------------
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(array, comparator, query) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  if (query) {
-    return filter(array, (_user) => _user.nom.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-  }
-  return stabilizedThis.map((el) => el[0]);
-}
-
 export default function UserPage() {
   const [showForm, setShowForm] = useState(false);
-  const [open, setOpen] = useState(null);
+
+  const [showFormUpdate , setShowFormUpdate] = useState(false);
+
+  const [open, setOpen] = useState(false);
 
   const [page, setPage] = useState(0);
 
@@ -94,6 +60,21 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [members, setMembres] = useState([]);
+
+
+
+  useEffect(() => {
+    getAllMembreFromBack();
+
+  }, []);
+  const getAllMembreFromBack = () => {
+    axios.get('http://localhost:3003/api/allmembre').then((res) => {
+      setMembres(res.data.data.data);
+
+      console.log('res.data.data.user', res.data.data.data);
+    });
+  };
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -108,180 +89,148 @@ export default function UserPage() {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.prenom);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, prenom) => {
-    const selectedIndex = selected.indexOf(prenom);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, prenom);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
-
-const handleShowFrom = () =>{
-  setShowForm()
-};
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setPage(0);
-    setRowsPerPage(parseInt(event.target.value, 10));
-  };
-
   const handleFilterBynom = (event) => {
     setPage(0);
     setFilternom(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const handleShowForm = () => {
+    setShowForm(!showForm);
+  };
+  const handleShowFormUpdate = () => {
+    setShowFormUpdate(!showFormUpdate);
+  };
+  const updateUtilisateur = async(membreId) => {
+   
+  }
+  const supprimerUtilisateur = async (membreId) => {
+  
+        console.log("ok supprimer", membreId);
+        Swal.fire({
+          title: "Vous-êtez sûr??",
+          text: "Vous ne pourrez pas revenir en arrière!",
+          icon: "avertissement",
+          showCancelButton: true,
+          confirmButtonColor: "#00ff00",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Oui, supprimez-le!",
+        }).then((result) => {
+          if (result.isConfirmed) {
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filternom);
-
-  const isNotFound = !filteredUsers.length && !!filternom;
-
+            axios.delete(`http://localhost:3003/api//formations/:66594/membres/${membreId}`)
+           
+            .then((res) => {
+              console.log(res.status);
+              console.log("resposne", res);
+              if (res.status === 200) {
+                // getAll();
+                // getAllMembreFromBack();
+                //  event.preventDefault();
+                Swal.fire("Supprimé!", "Votre fichier a été supprimé.", "Succès");
+                
+              }
+              window.location.reload(true); 
+            });
+          }
+        });
+      };
+  
+ 
   return (
     <>
       <Helmet>
-        <title> Utilisateur  </title>
+        <title> Utilisateur </title>
       </Helmet>
-
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Utilisateurs
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}onClick={handleShowFrom}>
-          Nouvel utilisateur
+          
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleShowForm}>
+            Nouvel utilisateur
           </Button>
-          {showForm && AddUserForm && (
-        <form>
-          <input type="text" name="prenom" placeholder="Prénom" />
-          <input type="text" name="nom" placeholder="Nom" />
-          <input type="email" name="email" placeholder="Email" />
-          <input type="text" name="groupes" placeholder="Groupes" />
-          <input type="text" name="adresse" placeholder="Adresse" />
-          <input type="text" name="ville" placeholder="Ville" />
-          <input type="text" name="pays" placeholder="Pays" />
-          <input type="text" name="code_postal" placeholder="Code postal" />
-          <input type="tel" name="tel" placeholder="Téléphone" />
-        </form>
-      )}
+          <Popover
+            open={Boolean(showForm)}
+            anchorEl={showForm}
+            onClose={handleCloseMenu}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+            PaperProps={{
+              sx: {
+                p: 1,
+                width: 700,
+                '& .MuiMenuItem-root': {
+                  px: 1,
+                  typography: 'body2',
+                  borderRadius: 0.75,
+                },
+              },
+            }}
+          >
+            <AddUserForm show={showForm} setShow={setShowForm} />
+          </Popover>
         </Stack>
-
         <Card>
           <UserListToolbar numSelected={selected.length} filternom={filternom} onFilternom={handleFilterBynom} />
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <UserListHead
-                  order={order}
-                  orderBy={orderBy}
-                  headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
-                />
+                <UserListHead order={order} orderBy={orderBy} headLabel={TABLE_HEAD} />
+
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, prenom, nom, email, groupes,adresse,ville,pays,codePostal,tel } = row;
-                    const selectedUser = selected.indexOf(prenom) !== -1;
+                  {members.map((member) => (
+                    <TableRow hover key={member.user.user_id}>
+                    
+                      <TableCell>{member.user.user_id}</TableCell>
+                      <TableCell>{member.user.fname}</TableCell>
+                      <TableCell>{member.user.lname}</TableCell>
+                      <TableCell>{member.user.email}</TableCell>
+                      <TableCell>Corpus LS</TableCell>
+                      <TableCell align="right">
 
-                    return (
-                      <TableRow hover key={id} tabIndex={-1} prenom="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, prenom)} />
-                        </TableCell>
-
-
-                        <TableCell align="left">{nom}</TableCell>                  
-
-                        <TableCell align="left">{email}</TableCell>
-
-                        <TableCell align="left">{groupes}</TableCell>
-
-                        <TableCell align="left">{adresse}</TableCell>
-
-                        <TableCell align="left">{ville}</TableCell>
-                          
-                        <TableCell align="left">{pays}</TableCell>
-
-                        <TableCell align="left">{codePostal}</TableCell>
-
-                        <TableCell align="left">{tel}</TableCell>
-
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                  {emptyRows > 0 && (
-                    <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-
-                {isNotFound && (
-                  <TableBody>
-                    <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                        <Paper
-                          sx={{
-                            textAlign: 'center',
-                          }}
-                        >
-                          <Typography variant="h6" paragraph>
-                          Pas trouvé
-                          </Typography>
-
-                          <Typography variant="body2">
-                          Aucun résultat trouvé pour &nbsp;
-                            <strong>&quot;{filternom}&quot;</strong>.
-                            <br /> Essayez de vérifier les fautes de frappe ou d'utiliser des mots complets.
-                          </Typography>
-                        </Paper>
+                        {/* <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
+                          <Iconify icon={'eva:more-vertical-fill'} />
+                        </IconButton> */}
+        <MenuItem onClick={handleShowFormUpdate}>
+          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }}  />
+          Modifier
+        </MenuItem>
+        <Popover
+            open={Boolean(showFormUpdate)}
+            anchorEl={showFormUpdate}
+            onClose={handleCloseMenu}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+            PaperProps={{
+              sx: {
+                p: 1,
+                width: 700,
+                '& .MuiMenuItem-root': {
+                  px: 1,
+                  typography: 'body2',
+                  borderRadius: 0.75,
+                },
+              },
+            }}
+          >
+            <UpdateUserForm showupdate={showFormUpdate} setShowupdate={setShowFormUpdate} />
+          </Popover>
+        <MenuItem sx={{ color: 'error.main' }} onClick={(e) => supprimerUtilisateur(member.user.user_id)}>
+          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+          Supprimer
+        </MenuItem>
+     
+                     
                       </TableCell>
                     </TableRow>
-                  </TableBody>
-                )}
+                  ))}
+                </TableBody>
               </Table>
             </TableContainer>
           </Scrollbar>
-
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={USERLIST.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
         </Card>
       </Container>
-
       <Popover
         open={Boolean(open)}
         anchorEl={open}
@@ -300,15 +249,34 @@ const handleShowFrom = () =>{
           },
         }}
       >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+        {/* <MenuItem onClick={handleShowForm}>
+          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }}  />
           Modifier
         </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }}>
+        <Popover
+            open={Boolean(showForm)}
+            anchorEl={showForm}
+            onClose={handleCloseMenu}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+            PaperProps={{
+              sx: {
+                p: 1,
+                width: 700,
+                '& .MuiMenuItem-root': {
+                  px: 1,
+                  typography: 'body2',
+                  borderRadius: 0.75,
+                },
+              },
+            }}
+          >
+            <AddUserForm show={showForm} setShow={setShowForm} />
+          </Popover>
+        <MenuItem sx={{ color: 'error.main' }} onClick={(e) => supprimerUtilisateur()}>
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           Supprimer
-        </MenuItem>
+        </MenuItem> */}
       </Popover>
     </>
   );
