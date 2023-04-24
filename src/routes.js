@@ -5,10 +5,12 @@ import SimpleLayout from './layouts/simple';
 //
 import BlogPage from './pages/FormationPage';
 import UserPage from './pages/UserPage';
+import UserUpdate from './sections/@dashboard/user/UserUpdate'
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/FormateurPage';
 import DashboardAppPage from './pages/DashboardAppPage';
+import Profile from './layouts/dashboard/header/Profile';
 
 // ----------------------------------------------------------------------
 
@@ -25,8 +27,10 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
+        { path: 'UserUpdate/:id', element:<UserUpdate/>},
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
+        { path: 'Profile', element: <Profile />}
       ],
     },
     {

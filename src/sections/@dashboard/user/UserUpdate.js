@@ -1,60 +1,71 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { useLocation, useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { Card, CardContent, Divider, Box, Typography, TextField, Button } from '@mui/material';
 
-export default function UpdateUserForm({ showupdate, setShowupdate }) {
-  const [membreId , setMembreId] = useState('');
+export default function UpdateUserForm() {
+  const [membreId, setMembreId] = useState('');
   const [prenom, setPrenom] = useState('');
   const [nom, setNom] = useState('');
   const [email, setEmail] = useState('');
-  const [groupes, setGroupes] = useState('');
+  // const [groupes, setGroupes] = useState('');
   const [adresse, setAdresse] = useState('');
   const [ville, setVille] = useState('');
   const [pays, setPays] = useState('');
-  const [codePostal, setCodePostal] = useState('');
+  // const [codePostal, setCodePostal] = useState('');
   const [tel, setTel] = useState('');
   const [formations, setFormations] = useState([]);
   const [selectedFormation, setSelectedFormation] = useState('');
   const [userData, setUserData] = useState({});
 
-
- 
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchUserData(membreId); 
-  }, [membreId]);
-  
+    setMembreId(location.state.id);
+    // getuserById(location.state.id)
+    console.log('ok id ', location.state.id);
+    fetchUserData(location.state.id);
+  }, []);
+
   const fetchUserData = async (membreId) => {
     try {
-      const response = await axios.get(`http://localhost:3003/api/users/${membreId}`);
-      setUserData(response.data);
+      const response = await axios.get(`http://localhost:3003/api/formations/:66594/membres/${membreId}`);
+      setUserData(response.data.data.data);
+      setPrenom(response.data.data.data.prenom);
+      setNom(response.data.data.data.nom);
+      console.log('*********////////', response.data.data.data.nom);
+      setEmail(response.data.data.data.email);
+      // setGroupes(response.data.data.data.groupes)
+      setAdresse(response.data.data.data.adresse);
+      setVille(response.data.data.data.ville);
+      setPays(response.data.data.data.pays);
+      // setCodePostal(response.data.data.data.codePostal)
+      setTel(response.data.data.data.tel);
+
+      console.log('ok ****************** ', response.data.data);
     } catch (error) {
       console.error(error);
     }
   };
 
   const handleUpdate = (event) => {
-    event.preventDefault();
-  
     const formData = new URLSearchParams();
-    
+
     formData.append('prenom', prenom);
     formData.append('nom', nom);
     formData.append('email', email);
-    formData.append('groupes', groupes);
     formData.append('adresse', adresse);
     formData.append('ville', ville);
     formData.append('pays', pays);
-    formData.append('codePostal', codePostal);
     formData.append('tel', tel);
     formData.append('selectedFormation', selectedFormation);
-  
+
     const token = localStorage.getItem('accessToken');
-  
+
     axios
-      .put(`http://localhost:3003/api/formations/:66594/membres/${membreId}`, formData, {
+      .patch(`http://localhost:3003/api/formations/:66594/membres/${membreId}`, formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
           Authorization: `Bearer ${token}`,
@@ -62,13 +73,15 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
       })
       .then((response) => {
         // Handle the response from the API
-        console.log("ok************",userData.prenom)
-        if (response.status === 201) {
+        console.log('ok************', userData.prenom);
+        console.log('**********statut', response.status);
+        if (response.status === 200) {
           const successMessage = document.createElement('p');
           successMessage.textContent = 'Form submitted successfully!';
-          setShowupdate(false);
-          alert(` Utilisateur ${prenom} modifié avec succès!`);
-          
+          // setShowupdate(false);
+          // alert(` Utilisateur ${prenom} modifié avec succès!`);
+          // window.location.href('http://localhost:3000/dashboard/user');
+          navigate('/dashboard/user');
         } else {
           throw new Error(response.status);
         }
@@ -79,9 +92,7 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
         // Show an error message
       });
   };
-  
 
- 
   useEffect(() => {
     // Make a request to the third-party API to retrieve the list of formations
     axios
@@ -95,7 +106,6 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
       });
   }, []);
 
- 
   const handleFormationChange = (event) => {
     const selectedNomFormation = event.target.value;
     setSelectedFormation(selectedNomFormation ? formations.idFormation : '');
@@ -103,7 +113,7 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
 
   return (
     <>
-      <div onSubmit={handleUpdate} style={{ display: showupdate ? 'block' : 'none' }}>
+      <div onSubmit={handleUpdate} style={{ block: 'none' }}>
         <Card
           variant="outlined"
           sx={{
@@ -137,7 +147,6 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
             <form>
               <TextField
                 id="default-value"
-                label="prenom "
                 variant="outlined"
                 defaultValue={userData.prenom}
                 fullWidth
@@ -149,7 +158,6 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
               />
               <TextField
                 id="default-value"
-                label="Nom "
                 variant="outlined"
                 defaultValue={userData.nom}
                 fullWidth
@@ -161,7 +169,6 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
               />
               <TextField
                 id="default-value"
-                label="Email "
                 variant="outlined"
                 defaultValue={userData.email}
                 fullWidth
@@ -171,9 +178,9 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <TextField
+              {/* <TextField
                 id="default-value"
-                label="Groupes "
+               
                 variant="outlined"
                 defaultValue={userData.groupes}
                 fullWidth
@@ -182,10 +189,9 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
                 }}
                 value={groupes}
                 onChange={(e) => setGroupes(e.target.value)}
-              />
+              /> */}
               <TextField
                 id="default-value"
-                label="Adresse "
                 variant="outlined"
                 defaultValue={userData.adresse}
                 fullWidth
@@ -197,7 +203,6 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
               />
               <TextField
                 id="default-value"
-                label="Ville "
                 variant="outlined"
                 defaultValue={userData.ville}
                 fullWidth
@@ -209,7 +214,6 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
               />
               <TextField
                 id="default-value"
-                label="Pays "
                 variant="outlined"
                 defaultValue={userData.pays}
                 fullWidth
@@ -219,9 +223,9 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
                 value={pays}
                 onChange={(e) => setPays(e.target.value)}
               />
-              <TextField
+              {/* <TextField
                 id="default-value"
-                label="code Postal"
+            
                 variant="outlined"
                 defaultValue={userData.codePostal}
                 fullWidth
@@ -230,10 +234,9 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
                 }}
                 value={codePostal}
                 onChange={(e) => setCodePostal(e.target.value)}
-              />
+              /> */}
               <TextField
                 id="default-value"
-                label="tel"
                 variant="outlined"
                 defaultValue={userData.tel}
                 fullWidth
@@ -269,11 +272,11 @@ export default function UpdateUserForm({ showupdate, setShowupdate }) {
               </div>
               <br /> <br />
               <div>
-                <Button color="success" variant="contained" onClick={handleUpdate}>
+                <Button color="success" variant="contained" onClick={(e) => handleUpdate()}>
                   Modifier
                 </Button>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Button color="error" variant="contained" onClick={() => setShowupdate(false)}>
+                <Button color="error" variant="contained" onClick={(e) => navigate(-1)}>
                   Fermer
                 </Button>
               </div>

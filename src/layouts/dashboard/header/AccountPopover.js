@@ -2,25 +2,14 @@ import { useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
+import {  useNavigate } from 'react-router-dom';
 // mocks_
 import account from '../../../_mock/account';
 
+
 // ----------------------------------------------------------------------
 
-const MENU_OPTIONS = [
-  {
-    label: 'Acceuil',
-    icon: 'eva:home-fill',
-  },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
-  {
-    label: 'Paramètres',
-    icon: 'eva:settings-2-fill',
-  },
-];
+
 
 // ----------------------------------------------------------------------
 
@@ -30,11 +19,25 @@ export default function AccountPopover() {
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
+  const handleprofile = () => {
+    navigate("/dashboard/Profile")
+  }
 
   const handleClose = () => {
     setOpen(false);
-
+  
   };
+  
+  
+  const navigate = useNavigate();
+
+  const handleconnection = () => {
+    navigate("/login")
+  }
+  
+  const handleacceuil = () => {
+    navigate("/dashboard/app")
+  }
 
   return (
     <>
@@ -86,19 +89,15 @@ export default function AccountPopover() {
           </Typography>
         </Box>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <Stack sx={{ p: 1 }}>
-          {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={handleClose}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Stack>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
-
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={handleacceuil} sx={{ m: 1 }}>
+          Acceuil
+        </MenuItem>
+        <MenuItem onClick={handleprofile} sx={{ m: 1 }}>
+          Profile
+        </MenuItem>
+        <MenuItem onClick={handleconnection} sx={{ m: 1 }}>
           Déconnecter
         </MenuItem>
       </Popover>

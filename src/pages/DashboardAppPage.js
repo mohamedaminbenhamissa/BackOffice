@@ -31,7 +31,7 @@ export default function DashboardAppPage() {
 
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Corpus LS
+          Dashboard
         </Typography>
 
         

@@ -5,7 +5,7 @@ import {  Container, Typography} from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
-import Logo from '../components/logo';
+
 
 // sections
 import { LoginForm } from '../sections/auth/login';
@@ -50,13 +50,7 @@ export default function LoginPage() {
       </Helmet>
 
       <StyledRoot>
-        <Logo
-          sx={{
-            position: 'fixed',
-            top: { xs: 16, sm: 24, md: 40 },
-            left: { xs: 16, sm: 24, md: 40 },
-          }}
-        />
+       
 
         {mdUp && (
           <StyledSection>

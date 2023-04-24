@@ -31,13 +31,17 @@ export default function LoginForm() {
 
       let access = response.data.accessToken
       const refresh = response.data.refreshToken
-
+      const id = response.data.id
       localStorage.setItem('accessToken', access);
+      console.log("idaaaaaaaaaaaaaaa",id);
       console.log("acess",localStorage.getItem('accessToken'));
+      // localStorage.setItem('id', id);
+      // console.log("id",localStorage.getItem('id'));
       // alert(localStorage.getItem('accessToken'))
       localStorage.setItem('refreshToken', refresh);
       // console.log("refresh",localStorage.getItem('refreshToken'));
-      alert(localStorage.getItem('refreshToken'))
+     
+      // alert(localStorage.getItem('id'))
 
 const expire = response.data.expire_in;
 if(expire===0){

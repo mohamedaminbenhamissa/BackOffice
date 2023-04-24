@@ -1,9 +1,8 @@
 import { Helmet } from 'react-helmet-async';
-import { filter } from 'lodash';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from "sweetalert2";
-
+import { useNavigate } from 'react-router-dom';
 // @mui
 
 import {
@@ -62,6 +61,11 @@ export default function UserPage() {
 
   const [members, setMembres] = useState([]);
 
+  const [membreId, setMembreId] = useState(localStorage.getItem("membreId"));
+  
+  const [query, setquery] = useState("")
+
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -96,13 +100,22 @@ export default function UserPage() {
 
   const handleShowForm = () => {
     setShowForm(!showForm);
+    console.log("**********memebreId******",membreId);
   };
-  const handleShowFormUpdate = () => {
+  const handleShowFormUpdate = (membreId) => {
+    localStorage.setItem("membreId",membreId);
+    console.log("**********memebreId******",membreId);
     setShowFormUpdate(!showFormUpdate);
+    
   };
-  const updateUtilisateur = async(membreId) => {
-   
-  }
+
+  const update = (id) => {
+    console.log("okkk updated");
+
+    navigate(`/dashboard/UserUpdate/${id}`, { state: { id } });
+
+  };
+  
   const supprimerUtilisateur = async (membreId) => {
   
         console.log("ok supprimer", membreId);
@@ -117,7 +130,7 @@ export default function UserPage() {
         }).then((result) => {
           if (result.isConfirmed) {
 
-            axios.delete(`http://localhost:3003/api//formations/:66594/membres/${membreId}`)
+            axios.delete(`http://localhost:3003/api/formations/:66594/membres/${membreId}`)
            
             .then((res) => {
               console.log(res.status);
@@ -173,13 +186,16 @@ export default function UserPage() {
         </Stack>
         <Card>
           <UserListToolbar numSelected={selected.length} filternom={filternom} onFilternom={handleFilterBynom} />
+          
+          {/* //  <input placeholder='serach' onChange={event => setquery(event.target.value)}/> */}
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
                 <UserListHead order={order} orderBy={orderBy} headLabel={TABLE_HEAD} />
 
                 <TableBody>
-                  {members.map((member) => (
+                  {members
+                  .map((member) => (
                     <TableRow hover key={member.user.user_id}>
                     
                       <TableCell>{member.user.user_id}</TableCell>
@@ -192,7 +208,7 @@ export default function UserPage() {
                         {/* <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
                           <Iconify icon={'eva:more-vertical-fill'} />
                         </IconButton> */}
-        <MenuItem onClick={handleShowFormUpdate}>
+        <MenuItem onClick={(e) => update(member.user.user_id)}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }}  />
           Modifier
         </MenuItem>
@@ -214,7 +230,7 @@ export default function UserPage() {
               },
             }}
           >
-            <UpdateUserForm showupdate={showFormUpdate} setShowupdate={setShowFormUpdate} />
+            <UpdateUserForm showupdate={showFormUpdate} setShowupdate={setShowFormUpdate}  />
           </Popover>
         <MenuItem sx={{ color: 'error.main' }} onClick={(e) => supprimerUtilisateur(member.user.user_id)}>
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
