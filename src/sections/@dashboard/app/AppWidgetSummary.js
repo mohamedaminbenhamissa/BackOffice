@@ -26,11 +26,12 @@ AppWidgetSummary.propTypes = {
   color: PropTypes.string,
   icon: PropTypes.string,
   title: PropTypes.string.isRequired,
+  title2: PropTypes.string.isRequired,
   total: PropTypes.number.isRequired,
   sx: PropTypes.object,
 };
 
-export default function AppWidgetSummary({ title, total, icon, color = 'primary', sx, ...other }) {
+export default function AppWidgetSummary({ title, total,title2, icon, color = 'primary', sx, ...other }) {
   return (
     <Card
       sx={{
@@ -58,9 +59,13 @@ export default function AppWidgetSummary({ title, total, icon, color = 'primary'
 
       <Typography variant="h3">{fShortenNumber(total)}</Typography>
 
+      <Typography variant="subtitle2" fontSize={25} sx={{ opacity: 1 }}>
+        {title2}
+      </Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         {title}
       </Typography>
+
     </Card>
   );
 }

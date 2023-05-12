@@ -11,6 +11,10 @@ import Page404 from './pages/Page404';
 import ProductsPage from './pages/FormateurPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import Profile from './layouts/dashboard/header/Profile';
+import Scan from './pages/Scan'
+import InscrireForm from './sections/auth/login/InscrireForm'; 
+import Calander from './pages/Calander';
+import Totale from './pages/Totale';
 
 // ----------------------------------------------------------------------
 
@@ -26,11 +30,18 @@ export default function Router() {
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
-        { path: 'user', element: <UserPage /> },
+        { path: 'utilisateur', element: <UserPage /> },
         { path: 'UserUpdate/:id', element:<UserUpdate/>},
         { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
-        { path: 'Profile', element: <Profile />}
+        { path: 'formation', element: <BlogPage /> },
+        { path: 'Profile', element: <Profile />},
+        { path: 'Scan', element: <Scan />},
+        { path: 'InscrireForm', element: <InscrireForm /> },
+        { path: 'Calander', element: <Calander /> },
+        { path: 'Totale', element: <Totale /> }
+    
+
+
       ],
     },
     {

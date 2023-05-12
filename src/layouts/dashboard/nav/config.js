@@ -13,7 +13,7 @@ const navConfig = [
   },
   {
     title: 'Utilisateurs',
-    path: '/dashboard/user',
+    path: '/dashboard/utilisateur',
     icon: icon('users'),
   },
   // {
@@ -23,7 +23,7 @@ const navConfig = [
   // },
   {
     title: 'Formations',
-    path: '/dashboard/blog',
+    path: '/dashboard/formation',
     icon: icon('elearning'),
   },
  

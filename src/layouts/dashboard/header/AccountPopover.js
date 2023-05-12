@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
+import axios from 'axios';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
@@ -15,7 +16,27 @@ import account from '../../../_mock/account';
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
+  const [email, setEmail] = useState('');
+  const [firstname, setFirstname] = useState('');
 
+  const userId = localStorage.getItem('userId');
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3003/api/users/users/${userId}`);
+      console.log('data----------', response.data.email);
+      setFirstname(response.data.firstname);
+      setEmail(response.data.email);
+      // setGroupes(response.data.data.data.groupes)
+      console.log('ok ****************** ', response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
@@ -82,10 +103,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+          {firstname}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {email}
           </Typography>
         </Box>
 

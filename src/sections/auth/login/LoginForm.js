@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 // @mui
-import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@mui/material';
+import { Button, Stack, IconButton, InputAdornment, TextField, Popover } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
-
+import InscrireForm from './InscrireForm'
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
@@ -15,6 +15,7 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [inscrire, setInscrire]= useState('');
   
 
   const handleClick = async (e) => {
@@ -33,7 +34,12 @@ export default function LoginForm() {
       const refresh = response.data.refreshToken
       const id = response.data.id
       localStorage.setItem('accessToken', access);
-      console.log("idaaaaaaaaaaaaaaa",id);
+      localStorage.setItem('userId', id)
+
+      const userId = localStorage.getItem('userId')
+      console.log("userid",userId)
+
+    
       console.log("acess",localStorage.getItem('accessToken'));
       // localStorage.setItem('id', id);
       // console.log("id",localStorage.getItem('id'));
@@ -54,6 +60,10 @@ if(expire===0){
       console.log(error);
     }
   };  
+
+  const handleInscription = () => {
+    setInscrire(!inscrire);
+  };
 
   return (
     <>
@@ -83,9 +93,32 @@ if(expire===0){
         />
       </Stack>
 
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <Checkbox name="remember" label="Remember me" />
-       
+      <Stack direction="row" alignItems="center"  sx={{ my: 2 }}>
+    
+            Vous n'avez pas de compte ? {''}
+              <Button variant="subtitle2" onClick={handleInscription}>S'inscrire</Button>
+              <Popover
+            open={Boolean(inscrire)}
+            anchorEl={inscrire}
+            // onClose={handleCloseMenu}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+            PaperProps={{
+              sx: {
+                p: 1,
+                width: 320,
+                '& .MuiMenuItem-root': {
+                  px: 1,
+                  typography: 'body2',
+                  borderRadius: 0.75,
+                },
+              },
+            }}
+          >
+            {/* <<UpdateUserForm showupdate={showFormUpdate} setShowupdate={setShowFormUpdate}  />> */}
+            <InscrireForm show={inscrire} setShow={setInscrire} />
+          </Popover>
+    
       </Stack>
 
       <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleClick}>

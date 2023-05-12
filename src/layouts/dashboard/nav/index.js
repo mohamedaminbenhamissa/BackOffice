@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
@@ -36,6 +37,25 @@ Nav.propTypes = {
 
 export default function Nav({ openNav, onCloseNav }) {
   const { pathname } = useLocation();
+  const [pseudo , setPseudo] = useState('');
+
+  const userId = localStorage.getItem('userId');
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3003/api/users/users/${userId}`);
+      console.log('data----------', response.data.email);
+      setPseudo(response.data.pseudo);
+      console.log('ok ****************** ', response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -53,7 +73,7 @@ export default function Nav({ openNav, onCloseNav }) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },
       }}
     >
-      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex', fontWeight: 'bold', fontSize: 26 }}>Corpus LS</Box>
+      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex', fontWeight: 'bold', fontSize: 26 }}> <img src="/assets/corpus.png" alt="Alternative text" /></Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <StyledAccount>
@@ -61,7 +81,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
           <Box sx={{ ml: 2 }}>
             <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-              {account.displayName}
+              {pseudo}
             </Typography>
 
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>

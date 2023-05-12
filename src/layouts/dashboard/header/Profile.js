@@ -34,12 +34,14 @@ export default function Profile() {
 
   const [members, setMembres] = useState([]);
 
-  const [prenom, setPrenom] = useState('');
-  const [nom, setNom] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [userData, setUserData] = useState({});
 
   const navigate = useNavigate();
+
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     fetchUserData();
@@ -47,28 +49,17 @@ export default function Profile() {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(`http://localhost:3003/api/users/getAdmin/`);
+      const response = await axios.get(`http://localhost:3003/api/users/users/${userId}`);
+      console.log('data----------', response.data.email);
+      setFirstname(response.data.firstname);
 
-      setPrenom(response.data.data.data.prenom);
-      setNom(response.data.data.data.nom);
-      console.log('*********////////', response.data.data.data.nom);
-      setEmail(response.data.data.data.email);
+      setLastname(response.data.lastname);
+      setEmail(response.data.email);
       // setGroupes(response.data.data.data.groupes)
-      console.log('ok ****************** ', response.data.data);
+      console.log('ok ****************** ', response.data);
     } catch (error) {
       console.error(error);
     }
-  };
-
-  useEffect(() => {
-    getAllMembreFromBack();
-  }, []);
-  const getAllMembreFromBack = () => {
-    axios.get('http://localhost:3003/api/allmembre').then((res) => {
-      setMembres(res.data.data.data);
-
-      console.log('res.data.data.user', res.data.data.data);
-    });
   };
 
   return (
@@ -82,18 +73,16 @@ export default function Profile() {
             Profile
           </Typography>
         </Stack>
-        <Card sx={{width:500, margin:'auto'}}>
+        <Card sx={{ width: 500, margin: 'auto' }}>
           <Scrollbar>
-            <TableContainer sx={{ minWidth: 500,
-            width:100 }}>
+            <TableContainer sx={{ minWidth: 500, width: 100 }}>
               <Table>
                 <UserListHead headLabel={TABLE_HEAD1} />
                 <br />
 
                 <TableBody>
                   <TableRow>
-                  <TableCell style={{textAlign:'center'}}>Mohamed Amine</TableCell>
-
+                    <TableCell style={{ textAlign: 'center' }}>{firstname}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -103,7 +92,7 @@ export default function Profile() {
 
                 <TableBody>
                   <TableRow>
-                    <TableCell style={{textAlign:'center'}}>Ben Hamissa</TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>{lastname}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -113,7 +102,7 @@ export default function Profile() {
 
                 <TableBody>
                   <TableRow>
-                    <TableCell style={{textAlign:'center'}}>mohamedamine.benhamissa@gmail.com</TableCell>
+                    <TableCell style={{ textAlign: 'center' }}>{email}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

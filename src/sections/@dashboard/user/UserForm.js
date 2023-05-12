@@ -3,9 +3,11 @@ import axios from 'axios';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { Card, CardContent, Divider, Box, Typography, TextField, Button } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { afficheUser } from '../../../slices/SliceUser';
 
 export default function AddUserForm({ show, setShow }) {
-  const [membreId , setMembreId] = useState('');
+  const [membreId, setMembreId] = useState('');
   const [prenom, setPrenom] = useState('');
   const [nom, setNom] = useState('');
   const [email, setEmail] = useState('');
@@ -17,10 +19,14 @@ export default function AddUserForm({ show, setShow }) {
   const [tel, setTel] = useState('');
   const [formations, setFormations] = useState([]);
   const [selectedFormation, setSelectedFormation] = useState('');
+  const dispatch = useDispatch();
+  // const { prenom, nom, email, groupes, adresse, ville, pays, codePostal, tel, selectedFormation } = useSelector((state) => state.form);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+ 
 
   const handleSubmit = (event) => {
     event.preventDefault();
-  
+
     const formData = new URLSearchParams();
 
     formData.append('prenom', prenom);
@@ -33,9 +39,9 @@ export default function AddUserForm({ show, setShow }) {
     formData.append('codePostal', codePostal);
     formData.append('tel', tel);
     formData.append('selectedFormation', selectedFormation);
-  
+
     const token = localStorage.getItem('accessToken');
-  
+
     axios
       .post(`http://localhost:3003/api/formations/${selectedFormation}/membres`, formData, {
         headers: {
@@ -44,15 +50,13 @@ export default function AddUserForm({ show, setShow }) {
         },
       })
       .then((response) => {
-        // Handle the response from the API
-        
         if (response.status === 201) {
           const successMessage = document.createElement('p');
           successMessage.textContent = 'Form submitted successfully!';
           setShow(false);
           alert(` Utilisateur ${prenom} ajouté avec succès!`);
-          console.log('souuuuuuuuu)))))))))uuuuuuuuuuuuuuuuuu', response);
-          window.location.reload(true); 
+          // console.log('souuuuuuuuu)))))))))uuuuuuuuuuuuuuuuuu', response);
+          window.location.reload(true);
         } else {
           throw new Error(response.status);
         }
@@ -63,9 +67,7 @@ export default function AddUserForm({ show, setShow }) {
         // Show an error message
       });
   };
-  
 
- 
   useEffect(() => {
     // Make a request to the third-party API to retrieve the list of formations
     axios
@@ -79,7 +81,6 @@ export default function AddUserForm({ show, setShow }) {
       });
   }, []);
 
- 
   const handleFormationChange = (event) => {
     const selectedNomFormation = event.target.value;
     setSelectedFormation(selectedNomFormation ? formations.idFormation : '');

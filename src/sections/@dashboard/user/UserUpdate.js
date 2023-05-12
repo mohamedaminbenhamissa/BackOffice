@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Card, CardContent, Divider, Box, Typography, TextField, Button } from '@mui/material';
 
@@ -50,7 +51,7 @@ export default function UpdateUserForm() {
     }
   };
 
-  const handleUpdate = (event) => {
+  const handleUpdate = () => {
     const formData = new URLSearchParams();
 
     formData.append('prenom', prenom);
@@ -78,10 +79,9 @@ export default function UpdateUserForm() {
         if (response.status === 200) {
           const successMessage = document.createElement('p');
           successMessage.textContent = 'Form submitted successfully!';
-          // setShowupdate(false);
-          // alert(` Utilisateur ${prenom} modifié avec succès!`);
-          // window.location.href('http://localhost:3000/dashboard/user');
-          navigate('/dashboard/user');
+          
+         
+          navigate(-1);
         } else {
           throw new Error(response.status);
         }
@@ -113,6 +113,7 @@ export default function UpdateUserForm() {
 
   return (
     <>
+        
       <div onSubmit={handleUpdate} style={{ block: 'none' }}>
         <Card
           variant="outlined"
@@ -272,11 +273,11 @@ export default function UpdateUserForm() {
               </div>
               <br /> <br />
               <div>
-                <Button color="success" variant="contained" onClick={(e) => handleUpdate()}>
+                <Button color="success" variant="contained" onClick={() => handleUpdate()}>
                   Modifier
                 </Button>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Button color="error" variant="contained" onClick={(e) => navigate(-1)}>
+                <Button color="error" variant="contained" onClick={() => navigate(-1)}>
                   Fermer
                 </Button>
               </div>

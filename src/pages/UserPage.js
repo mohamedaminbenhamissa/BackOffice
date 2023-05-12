@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
+
 // @mui
 
 import {
@@ -22,7 +23,11 @@ import {
   TableContainer,
 } from '@mui/material';
 // components
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+import { useSelector, useDispatch } from 'react-redux';
+import {afficheUser} from '../slices/SliceUser'
 import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
@@ -63,7 +68,9 @@ export default function UserPage() {
 
   const [membreId, setMembreId] = useState(localStorage.getItem("membreId"));
   
-  const [query, setquery] = useState("")
+  const [query, setquery] = useState("");
+  const amin=useSelector(state => state.user)
+  const dispatch = useDispatch()
 
   const navigate = useNavigate();
 
@@ -111,7 +118,7 @@ export default function UserPage() {
 
   const update = (id) => {
     console.log("okkk updated");
-
+    
     navigate(`/dashboard/UserUpdate/${id}`, { state: { id } });
 
   };
@@ -142,7 +149,8 @@ export default function UserPage() {
                 Swal.fire("Supprimé!", "Votre fichier a été supprimé.", "Succès");
                 
               }
-              window.location.reload(true); 
+              window.location.reload(true);  
+              toast.error("Supprimé avec succées", { position: "top-center" }); 
             });
           }
         });
@@ -151,6 +159,17 @@ export default function UserPage() {
  
   return (
     <>
+    <ToastContainer 
+    position="top-right"
+    autoClose={5000}
+    hideProgressBar={false}
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+    theme="light"/>
       <Helmet>
         <title> Utilisateur </title>
       </Helmet>
@@ -242,6 +261,7 @@ export default function UserPage() {
                     </TableRow>
                   ))}
                 </TableBody>
+                {/* <p>{amin.email}oooooooooooooooooooooo</p> */}
               </Table>
             </TableContainer>
           </Scrollbar>
