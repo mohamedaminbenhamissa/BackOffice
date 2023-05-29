@@ -8,10 +8,11 @@ import UserPage from './pages/UserPage';
 import UserUpdate from './sections/@dashboard/user/UserUpdate'
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import ProductsPage from './pages/FormateurPage';
+import WebinarePage from './pages/WebinairePage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import Profile from './layouts/dashboard/header/Profile';
-import Scan from './pages/Scan'
+import Historique from './layouts/dashboard/header/Historique';
+import Scan from './pages/Scan';
 import InscrireForm from './sections/auth/login/InscrireForm'; 
 import Calander from './pages/Calander';
 import Totale from './pages/Totale';
@@ -32,9 +33,10 @@ export default function Router() {
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'utilisateur', element: <UserPage /> },
         { path: 'UserUpdate/:id', element:<UserUpdate/>},
-        { path: 'products', element: <ProductsPage /> },
+        { path: 'webinaire', element: <WebinarePage /> },
         { path: 'formation', element: <BlogPage /> },
         { path: 'Profile', element: <Profile />},
+        { path: 'Historique', element: <Historique />},
         { path: 'Scan', element: <Scan />},
         { path: 'InscrireForm', element: <InscrireForm /> },
         { path: 'Calander', element: <Calander /> },

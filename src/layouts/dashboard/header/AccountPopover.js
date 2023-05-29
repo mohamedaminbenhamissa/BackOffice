@@ -59,7 +59,9 @@ export default function AccountPopover() {
   const handleacceuil = () => {
     navigate("/dashboard/app")
   }
-
+  const handlehistorique = () => {
+    navigate("/dashboard/Historique")
+  }
   return (
     <>
       <IconButton
@@ -117,6 +119,9 @@ export default function AccountPopover() {
         </MenuItem>
         <MenuItem onClick={handleprofile} sx={{ m: 1 }}>
           Profile
+        </MenuItem>
+        <MenuItem onClick={handlehistorique} sx={{ m: 1 }}>
+          Historique
         </MenuItem>
         <MenuItem onClick={handleconnection} sx={{ m: 1 }}>
           Déconnecter

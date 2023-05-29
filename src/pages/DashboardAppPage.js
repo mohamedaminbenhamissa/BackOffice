@@ -91,13 +91,13 @@ export default function DashboardAppPage() {
           <Grid item xs={12} md={6} lg={12}>
             <AppWebsiteVisits
               title="Progression des Apprenants"
-              chartLabels={['user 1', 'user 2 ', 'user 3', 'user 4', 'user 5', 'user 6', 'user 7', 'user 8', 'user 9']}
+              chartLabels={['Apprenanat 1', 'Apprenanat 2 ', 'Apprenanat 3', 'Apprenanat 4', 'Apprenanat 5', 'Apprenanat 6']}
               chartData={[
                 {
-                  name: 'Team A',
+                  name: 'Progression',
                   type: 'column',
                   fill: 'solid',
-                  data: [23, 11, 22, 27, 23, 11, 22, 27, 80],
+                  data: [23, 11, 22, 80, 23, 11],
                 },
               ]}
             />

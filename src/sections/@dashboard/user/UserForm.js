@@ -20,12 +20,38 @@ export default function AddUserForm({ show, setShow }) {
   const [formations, setFormations] = useState([]);
   const [selectedFormation, setSelectedFormation] = useState('');
   const dispatch = useDispatch();
-  // const { prenom, nom, email, groupes, adresse, ville, pays, codePostal, tel, selectedFormation } = useSelector((state) => state.form);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
+  // const { prenom, nom, email, groupes, adresse, ville, pays, codePostal, tel, selectedFormation } = useSelector((state) => state.form);
+
  
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // Vérification des champs obligatoires
+    const errors = {};
+    if (!prenom) {
+      errors.prenom = 'Le prénom est obligatoire';
+    }
+    if (!nom) {
+      errors.nom = 'Le nom est obligatoire';
+    }
+    if (!email) {
+      errors.email = 'L\'email est obligatoire';
+    }
+    if (!groupes) {
+      errors.groupes = 'Le groupe est obligatoire';
+    }
+    if (!selectedFormation) {
+      errors.selectedFormation = 'Veuillez sélectionner une formation';
+    }
+
+    // Si des erreurs sont présentes, on les affiche et on arrête le traitement
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
 
     const formData = new URLSearchParams();
 
@@ -131,6 +157,8 @@ export default function AddUserForm({ show, setShow }) {
                 }}
                 value={prenom}
                 onChange={(e) => setPrenom(e.target.value)}
+                error={formErrors.prenom}
+                helperText={formErrors.prenom}
               />
               <TextField
                 id="default-value"
@@ -143,6 +171,8 @@ export default function AddUserForm({ show, setShow }) {
                 }}
                 value={nom}
                 onChange={(e) => setNom(e.target.value)}
+                error={formErrors.nom}
+                helperText={formErrors.nom}
               />
               <TextField
                 id="default-value"
@@ -155,6 +185,8 @@ export default function AddUserForm({ show, setShow }) {
                 }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                error={formErrors.email}
+                helperText={formErrors.email}
               />
               <TextField
                 id="default-value"
@@ -167,6 +199,8 @@ export default function AddUserForm({ show, setShow }) {
                 }}
                 value={groupes}
                 onChange={(e) => setGroupes(e.target.value)}
+                error={formErrors.groupes}
+                helperText={formErrors.groupes}
               />
               <TextField
                 id="default-value"

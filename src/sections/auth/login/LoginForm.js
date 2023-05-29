@@ -16,10 +16,17 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [inscrire, setInscrire]= useState('');
+  const [error, setError] = useState('');
   
 
   const handleClick = async (e) => {
     e.preventDefault();
+
+    if (email.trim() === '' || password.trim() === '') {
+      setError('Veuillez remplir tous les champs');
+      return;
+    }
+
     const apiUrl = 'http://localhost:3003/api/users/signin';
     const data = new URLSearchParams();
     data.append('email', email);
@@ -58,6 +65,12 @@ if(expire===0){
     
     } catch (error) {
       console.log(error);
+      if (error.response && error.response.data) {
+        const { message } = error.response.data;
+        setError(message);
+      } else {
+        setError('Une erreur s\'est produite lors de la connexion');
+      }
     }
   };  
 

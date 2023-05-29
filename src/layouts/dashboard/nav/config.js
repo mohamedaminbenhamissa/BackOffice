@@ -26,6 +26,11 @@ const navConfig = [
     path: '/dashboard/formation',
     icon: icon('elearning'),
   },
+  // {
+  //   title: 'Webinaires',
+  //   path: '/dashboard/webinaire',
+  //   icon: icon('webiniare'),
+  // },
  
  
 ];

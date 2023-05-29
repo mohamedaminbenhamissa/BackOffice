@@ -22,7 +22,7 @@ const Scan = ({ show, setShow }) => {
         
         <div style={{ marginLeft:30}} id='idQrCode' >
         <p style={{ marginLeft:50}} >Scan My QR Code</p>
-      <QRCodeCanvas value="https://www.facebook.com" size={250}  />
+      <QRCodeCanvas value="https://www.corpusls.com" size={250}  />
       </div>
         
       </header>
