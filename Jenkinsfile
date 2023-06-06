@@ -1,17 +1,31 @@
 pipeline {
   agent any
-  stages{
- 
-   stage('Build Docker Image') {
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+  }
+  environment {
+    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+  }
+  stages {
+    stage('Build') {
       steps {
-        bat 'docker build -t backoffice:v2 .'
+        sh 'docker build -t lloydmatereke/jenkins-docker-hub .'
       }
     }
-    
-    stage('Deploy') {
+    stage('Login') {
       steps {
-        bat 'docker run -it -p 8085:80 backoffice:v2'
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
       }
+    }
+    stage('Push') {
+      steps {
+        sh 'docker push lloydmatereke/jenkins-docker-hub'
+      }
+    }
+  }
+  post {
+    always {
+      sh 'docker logout'
     }
   }
 }
