@@ -1,6 +1,11 @@
 pipeline {
   agent any
   
+  stage('SCM Checkout'){
+    steps {
+      git branch 'master', url= 'https://github.com/mohamedaminbenhamissa/BackOffice.git'
+    }
+  }
 
     
     stage('Build Docker Image') {
