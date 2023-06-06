@@ -9,23 +9,23 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'docker build -t lloydmatereke/jenkins-docker-hub .'
+        bat  'docker build -t mohamedaminbenhamissa/jenkins-docker-hub .'
       }
     }
     stage('Login') {
       steps {
-        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        bat  'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR dckr_pat_vBK5fgDwfm1HA9PmgaZCXW_VGKc'
       }
     }
     stage('Push') {
       steps {
-        sh 'docker push lloydmatereke/jenkins-docker-hub'
+        bat  'docker push mohamedaminbenhamissa/jenkins-docker-hub'
       }
     }
   }
   post {
     always {
-      sh 'docker logout'
+      bat  'docker logout'
     }
   }
 }
