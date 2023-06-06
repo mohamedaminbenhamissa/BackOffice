@@ -2,15 +2,15 @@ pipeline {
   agent any
   stages{
  
-    stage('Build Docker Image') {
+   stage('Build Docker Image') {
       steps {
-        bat 'docker build -t medamine/backoffice:v2 .'
+        bat 'docker build -t backoffice:v2 .'
       }
     }
     
-    stage('Publish') {
+    stage('Deploy') {
       steps {
-        bat 'docker push medamine/backoffice:v2'
+        bat 'docker run -it -p 8085:80 backoffice:v2'
       }
     }
   }
