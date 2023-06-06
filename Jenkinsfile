@@ -16,13 +16,13 @@ pipeline {
     
     stage('Build Docker Image') {
       steps {
-        sh 'docker build -t backoffice:v2 .'
+        bat 'docker build -t backoffice:v2 .'
       }
     }
     
     stage('Deploy') {
       steps {
-        sh 'docker run -it -p 8085:80 backoffice:v2'
+        bat 'docker run -it -p 8085:80 backoffice:v2'
       }
     }
   }
