@@ -14,9 +14,10 @@ pipeline {
     }
     stage('Login') {
       steps {
-        bat """
-        echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_CREDENTIALS_USR% dckr_pat_vBK5fgDwfm1HA9PmgaZCXW_VGKc
-        """
+        script {
+          def credentials = bat(script: 'echo %DOCKERHUB_CREDENTIALS_PSW%', returnStdout: true).trim()
+          bat "echo ${credentials} | docker login -u %DOCKERHUB_CREDENTIALS_USR% --password-stdin dckr_pat_vBK5fgDwfm1HA9PmgaZCXW_VGKc"
+        }
       }
     }
     stage('Push') {
