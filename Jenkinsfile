@@ -3,7 +3,7 @@ pipeline {
   
   stage('SCM Checkout'){
     steps {
-      git branch 'master', url= 'https://github.com/mohamedaminbenhamissa/BackOffice.git'
+      git branch: 'master', url: 'https://github.com/mohamedaminbenhamissa/BackOffice.git'
     }
   }
 
