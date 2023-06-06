@@ -1,25 +1,17 @@
 pipeline {
   agent any
   stages{
-  
-  stage('SCM Checkout'){
-    steps {
-      git branch: 'master', url: 'https://github.com/mohamedaminbenhamissa/BackOffice.git'
-    }
-  }
-
-    
+ 
     stage('Build Docker Image') {
       steps {
-        bat 'docker build -t backoffice:v2 .'
+        bat 'docker build -t medamine/backoffice:v2 .'
       }
     }
     
-    stage('Deploy') {
+    stage('Publish') {
       steps {
-        bat 'docker run -it -p 8085:80 backoffice:v2'
+        bat 'docker push medamine/backoffice:v2'
       }
     }
   }
-
 }
