@@ -9,21 +9,23 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        bat 'docker build -t mohamedaminbenhamissa/jenkins-docker-hub .'
+        bat 'docker build -t mohamedaminbenhamissa/frontadmin:v3 .'
       }
     }
     stage('Login') {
       steps {
-      withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+      //withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+         //echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin
           bat """
-            echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin
+           docker login -u mohamedaminbenhamissa -p mohamado53853190
           """
-        }
+       // }
       }
     }
     stage('Push') {
       steps {
-        bat 'docker push mohamedaminbenhamissa/jenkins-docker-hub'
+        //bat 'docker push mohamedaminbenhamissa/jenkins-docker-hub'
+        bat 'docker push mohamedaminbenhamissa/frontadmin:v3'
       }
     }
   }
