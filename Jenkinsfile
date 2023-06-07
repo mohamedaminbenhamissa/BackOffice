@@ -14,12 +14,12 @@ pipeline {
     }
     stage('Login') {
       steps {
-      //withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+      withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
          //echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin
           bat """
            docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%
           """
-       // }
+        }
       }
     }
     stage('Push') {
